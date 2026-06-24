@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>สนุกกับอัลกอริทึมแบบประมาณ | The Design of Approximation Algorithms สำหรับเด็ก</title>
+<meta name="description" content="เรียนรู้แนวคิดจากหนังสือ The Design of Approximation Algorithms แบบย่อยง่าย เห็นภาพจริง สำหรับเด็กอายุ 10-15 ปี">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2d2a45;
+    --soft:#6a6685;
+    --bg:#fdf8f3;
+    --card:#ffffff;
+    --line:#ece6f5;
+    --accent:#6C5CE7;
+    --shadow:0 10px 30px rgba(80,60,140,.10);
+    --radius:22px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;font-family:'Mali',system-ui,sans-serif;color:var(--ink);
+    background:var(--bg);line-height:1.75;font-size:17px;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Itim',cursive;font-weight:400;line-height:1.3}
+  a{color:#5a4bd6}
+  img{max-width:100%}
+
+  /* progress bar */
+  #progress{position:fixed;top:0;left:0;height:5px;width:0;z-index:60;
+    background:linear-gradient(90deg,#FF6B6B,#FFD93D,#00B894,#0984E3,#A55EEA);}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;background:rgba(253,248,243,.92);
+    backdrop-filter:blur(8px);border-bottom:2px solid var(--line);}
+  .nav-inner{max-width:1080px;margin:0 auto;padding:10px 14px;display:flex;gap:10px;align-items:center}
+  .brand{font-family:'Itim',cursive;font-size:20px;white-space:nowrap;display:flex;gap:6px;align-items:center}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+  .chips::-webkit-scrollbar{height:6px}
+  .chips::-webkit-scrollbar-thumb{background:#dcd4ec;border-radius:6px}
+  .chip{flex:0 0 auto;text-decoration:none;color:var(--soft);background:#fff;
+    border:2px solid var(--line);padding:6px 13px;border-radius:999px;font-size:14px;
+    transition:.15s;white-space:nowrap;font-weight:600}
+  .chip:hover{color:#fff;background:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+
+  /* hero */
+  header.hero{position:relative;overflow:hidden;text-align:center;padding:70px 18px 60px;
+    background:radial-gradient(1200px 400px at 50% -10%,#efe9ff 0,transparent 60%)}
+  .hero h1{font-size:clamp(30px,6vw,56px);margin:.2em 0 .15em;color:#43356d}
+  .hero .sub{font-size:clamp(16px,2.4vw,21px);color:var(--soft);max-width:680px;margin:0 auto 8px}
+  .hero .book{display:inline-block;margin-top:14px;background:#fff;border:2px dashed #cdbff0;
+    border-radius:16px;padding:10px 18px;color:#6a5acf;font-size:15px}
+  .mascot{font-size:clamp(54px,12vw,96px);line-height:1;filter:drop-shadow(0 10px 12px rgba(108,92,231,.25));
+    animation:bob 3s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .scroll-hint{margin-top:26px;color:#a99fc7;font-size:14px}
+  .scroll-hint span{display:inline-block;animation:bob 1.6s infinite}
+
+  /* sections */
+  section{padding:54px 0 10px}
+  .chapter{scroll-margin-top:78px}
+  .ch-head{background:var(--accent);color:#fff;border-radius:var(--radius);
+    padding:22px 26px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .ch-head:after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;
+    background:rgba(255,255,255,.12);border-radius:50%}
+  .ch-badge{display:inline-block;background:rgba(255,255,255,.25);padding:3px 12px;border-radius:999px;
+    font-size:14px;font-weight:700;letter-spacing:.4px}
+  .ch-head h2{font-size:clamp(23px,4vw,34px);margin:8px 0 4px;color:#fff}
+  .ch-tag{margin:0;opacity:.92;font-size:15px}
+
+  .ch-body{display:grid;gap:18px;margin-top:18px}
+  @media(min-width:780px){
+    .ch-body{grid-template-columns:1fr 1fr}
+    .ch-body .full{grid-column:1/-1}
+  }
+  .card{background:var(--card);border:2px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 8px;font-size:20px;display:flex;gap:8px;align-items:center}
+  .card p{margin:.4em 0}
+  .card.problem{border-color:#ffe0e0}
+  .card.idea{border-color:#dff5ec;background:#fbfffd}
+  .pill-accent{color:var(--accent);font-weight:700}
+
+  .fact{background:linear-gradient(180deg,#fffdf3,#fff);border-color:#ffe9b0}
+  .fact h3{color:#d9920a}
+  .guarantee{background:linear-gradient(180deg,#f3fbff,#fff);border-color:#bfe6ff}
+  .guarantee h3{color:#1577c4}
+  .ratio{display:inline-block;background:#eef4ff;color:#1f6fd6;border-radius:10px;
+    padding:2px 10px;font-weight:700;font-family:'Itim',cursive}
+
+  /* demo box */
+  .demo{background:#fff;border:2px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;box-shadow:var(--shadow)}
+  .demo h3{margin:0 0 4px;font-size:20px}
+  .demo .hint{color:var(--soft);font-size:14px;margin:0 0 14px}
+  .btn{font-family:'Mali',sans-serif;font-weight:700;border:none;cursor:pointer;
+    background:var(--accent);color:#fff;border-radius:999px;padding:9px 18px;font-size:15px;
+    transition:.15s;box-shadow:0 4px 10px rgba(0,0,0,.08)}
+  .btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+  .btn.ghost{background:#fff;color:var(--accent);border:2px solid var(--accent)}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .stat{font-family:'Itim',cursive;font-size:18px}
+  .big-num{font-family:'Itim',cursive;font-size:clamp(26px,6vw,44px);color:var(--accent);word-break:break-all}
+
+  /* set cover demo */
+  .villages{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .vil{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    background:#f1eefb;border:2px solid #e2daf6;font-size:20px;transition:.2s;position:relative}
+  .vil.cov{background:#d6f7e6;border-color:#7ad6a4;transform:scale(1.05)}
+  .vil small{position:absolute;bottom:-2px;right:2px;font-size:9px;color:#9b93b8;font-family:'Mali'}
+  .stations{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
+  .stn{cursor:pointer;border:2px solid #e2daf6;background:#fff;border-radius:14px;padding:8px 12px;
+    font-size:14px;transition:.15s;user-select:none}
+  .stn:hover{border-color:var(--accent)}
+  .stn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  /* scheduling */
+  .jobs,.machines{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  .job{cursor:pointer;border-radius:12px;color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:'Itim';font-size:16px;min-width:40px;height:38px;padding:0 6px;border:3px solid transparent}
+  .job.sel{border-color:#2d2a45;transform:translateY(-2px)}
+  .job.used{opacity:.35;cursor:default}
+  .mac{flex:1;min-width:120px;background:#f6f3fd;border:2px solid #e6def7;border-radius:14px;padding:8px;min-height:60px;cursor:pointer}
+  .mac h4{margin:0 0 6px;font-size:13px;color:var(--soft);font-family:'Mali';font-weight:700}
+  .mac .blk{border-radius:8px;color:#fff;font-size:13px;text-align:center;margin-bottom:4px;font-family:'Itim'}
+  .bar-track{background:#eee;border-radius:8px;overflow:hidden;height:26px;margin-top:8px;position:relative}
+  .bar-fill{height:100%;background:var(--accent);width:0;transition:.4s;display:flex;align-items:center;
+    color:#fff;font-size:13px;padding-left:8px}
+
+  /* knapsack */
+  .items{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin:8px 0}
+  .item{cursor:pointer;border:2px solid #e2daf6;border-radius:14px;padding:10px;text-align:center;transition:.15s;background:#fff}
+  .item.on{background:#fff7e6;border-color:#ffc94d;box-shadow:0 0 0 3px #ffe9b0 inset}
+  .item .emo{font-size:30px}
+  .item .nm{font-weight:700;font-size:14px}
+  .item .sp{font-size:12px;color:var(--soft)}
+  .gauge{height:30px;border-radius:999px;background:#eee;overflow:hidden;margin:10px 0;position:relative}
+  .gauge .fill{height:100%;width:0;transition:.3s;background:#00B894;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-size:13px}
+  .gauge.over .fill{background:#FF6B6B}
+
+  /* graph canvas */
+  .canvas-wrap{display:flex;justify-content:center}
+  canvas{max-width:100%;touch-action:none}
+
+  /* svg illustration */
+  .illu{background:#fff;border:2px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);text-align:center}
+  .illu figcaption{color:var(--soft);font-size:14px;margin-top:8px}
+
+  /* glossary */
+  .gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .term{background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+  .term b{font-family:'Itim';font-size:18px;color:#5a4bd6}
+  .term .en{color:#a99fc7;font-size:13px}
+
+  /* quiz */
+  .quiz{background:#fff;border:2px solid var(--line);border-radius:var(--radius);padding:18px 22px;box-shadow:var(--shadow);margin-top:14px}
+  .quiz .q{font-weight:700;margin:0 0 8px}
+  .opts{display:grid;gap:8px}
+  .opt{text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 14px;cursor:pointer;font-family:'Mali';font-size:15px;transition:.15s}
+  .opt:hover{border-color:var(--accent)}
+  .opt.right{background:#d6f7e6;border-color:#5ec98c}
+  .opt.wrong{background:#ffe0e0;border-color:#ff9a9a}
+  .quiz .ans{margin-top:10px;font-size:14px;color:var(--soft);display:none}
+
+  .section-title{font-size:clamp(24px,4vw,34px);text-align:center;color:#43356d;margin:0 0 6px}
+  .section-sub{text-align:center;color:var(--soft);margin:0 auto 22px;max-width:620px}
+
+  footer{margin-top:60px;background:#2d2a45;color:#d9d3ee;padding:34px 18px 46px;text-align:center}
+  footer a{color:#b9aef5}
+  footer .credit{max-width:680px;margin:0 auto;font-size:15px}
+
+  /* back to top */
+  #top{position:fixed;right:16px;bottom:16px;z-index:40;border:none;cursor:pointer;
+    background:var(--accent);color:#fff;width:48px;height:48px;border-radius:50%;font-size:20px;
+    box-shadow:0 8px 20px rgba(108,92,231,.4);opacity:0;pointer-events:none;transition:.25s}
+  #top.show{opacity:1;pointer-events:auto}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav>
+  <div class="nav-inner">
+    <span class="brand">🤖 น้องอัปพรอกซ์</span>
+    <div class="chips">
+      <a class="chip" href="#intro">เริ่มต้น</a>
+      <a class="chip" href="#ch1">1 · เลือกให้ครบ</a>
+      <a class="chip" href="#ch2">2 · โลภ &amp; ขยับ</a>
+      <a class="chip" href="#ch3">3 · ปัดให้กลม</a>
+      <a class="chip" href="#ch4">4 · ปัดเศษ LP</a>
+      <a class="chip" href="#ch5">5 · ทอยลูกเต๋า</a>
+      <a class="chip" href="#ch6">6 · ลูกศรในอวกาศ</a>
+      <a class="chip" href="#ch7">7 · ต่อราคา</a>
+      <a class="chip" href="#ch8">8 · ตัดแผนที่</a>
+      <a class="chip" href="#glossary">คำศัพท์</a>
+      <a class="chip" href="#quiz">ทบทวน</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="mascot">🤖</div>
+  <h1>สนุกกับ “อัลกอริทึมแบบประมาณ”</h1>
+  <p class="sub">บางปัญหายากเกินกว่าจะหาคำตอบที่ดีที่สุดได้ทัน เราจึงหาคำตอบที่ “ดีพอ” แบบเร็วๆ แถมยัง <b>พิสูจน์ได้</b> ว่ามันใกล้เคียงคำตอบที่ดีที่สุดแค่ไหน มาดูกันว่านักวิทยาศาสตร์คอมพิวเตอร์เขาคิดยังไง!</p>
+  <div class="book">📘 ย่อยจากหนังสือ <b>The Design of Approximation Algorithms</b> โดย Williamson &amp; Shmoys</div>
+  <div class="scroll-hint">เลื่อนลงไปเล่นกันเลย <span>👇</span></div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===================== INTRO ===================== -->
+  <section id="intro" class="chapter" style="--accent:#6C5CE7">
+    <div class="ch-head">
+      <span class="ch-badge">เกริ่นนำ</span>
+      <h2>🧩 ทำไมต้องมีคำตอบแบบ “ดีพอ”?</h2>
+      <p class="ch-tag">ปัญหายากบางอย่าง ต่อให้คอมพิวเตอร์เก่งที่สุดก็แก้แบบเป๊ะไม่ทัน</p>
+    </div>
+    <div class="ch-body">
+      <div class="card problem">
+        <h3>🤔 ปัญหาคืออะไร?</h3>
+        <p>ลองนึกว่าเราต้องไปส่งของให้เพื่อนหลายบ้าน แล้วอยากได้เส้นทางที่ <b>สั้นที่สุด</b> ถ้ามีไม่กี่บ้านก็ลองทุกทางได้ แต่พอบ้านเยอะขึ้น จำนวนเส้นทางที่เป็นไปได้จะ <b>พุ่งทะยานแบบน่ากลัว</b></p>
+        <p>ปัญหาแบบนี้เรียกว่า <span class="pill-accent">NP-hard</span> คือยากจนยังไม่มีใครรู้วิธีหาคำตอบที่ดีที่สุดได้เร็วเลย</p>
+      </div>
+      <div class="card idea">
+        <h3>💡 ไอเดียเด็ด</h3>
+        <p>แทนที่จะรอคำตอบที่ดีที่สุดเป็นล้านปี เราออกแบบวิธีที่ให้คำตอบ <b>“ดีพอ”</b> ได้ในพริบตา</p>
+        <p>สิ่งที่เจ๋งคือ เราจะ <b>การันตีเป็นตัวเลข</b> ได้เลยว่าคำตอบของเราแย่กว่าคำตอบที่ดีที่สุด <b>ไม่เกินกี่เท่า</b> ตัวเลขนี้เรียกว่า <span class="ratio">อัตราการประมาณ (α)</span></p>
+        <p>เช่น α = 2 แปลว่า “คำตอบของเราอาจยาวเป็น 2 เท่าของทางที่สั้นที่สุด แต่ไม่เกินนั้นแน่นอน”</p>
+      </div>
+
+      <div class="demo full">
+        <h3>🚗 เครื่องระเบิดจำนวนเส้นทาง</h3>
+        <p class="hint">เลื่อนเพิ่มจำนวนบ้านที่ต้องไปส่งของ แล้วดูว่าจำนวนเส้นทางที่ต้องลองเพิ่มเร็วแค่ไหน (สูตร = (n−1)! ÷ 2)</p>
+        <label>จำนวนบ้าน: <b id="tspN">6</b></label>
+        <input id="tspSlider" type="range" min="4" max="25" value="6" style="width:100%">
+        <div style="margin-top:10px">จำนวนเส้นทางที่ต้องลองทั้งหมด:</div>
+        <div class="big-num" id="tspRoutes">—</div>
+        <p id="tspMsg" class="stat" style="color:var(--soft)"></p>
+        <p id="tspTime" style="font-size:14px;color:var(--soft);margin:4px 0 0"></p>
+      </div>
+
+      <div class="card guarantee full">
+        <h3>🏅 จำคำนี้ไว้</h3>
+        <p>หนังสือเล่มนี้รวบรวม <b>เทคนิคหลัก</b> ในการสร้างอัลกอริทึมแบบประมาณไว้ 8 แบบ — เราจะไปรู้จักทีละบท แต่ละบทมีตัวอย่างจากชีวิตจริงและของเล่นให้ลองกดด้วยนะ!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CH1 SET COVER ===================== -->
+  <section id="ch1" class="chapter" style="--accent:#FF6B6B">
+    <div class="ch-head">
+      <span class="ch-badge">บทที่ 1 · อัลกอริทึมโลภ + ปัดเศษ LP</span>
+      <h2>🚒 เลือกให้ครอบคลุม (Set Cover)</h2>
+      <p class="ch-tag">เลือก “ของกลุ่มน้อยที่สุด” ที่รวมกันแล้วครบทุกอย่าง</p>
+    </div>
+    <div class="ch-body">
+      <div class="card problem">
+        <h3>🤔 ปัญหาคืออะไร?</h3>
+        <p>เราเป็นนายกเทศมนตรี ต้องสร้าง <b>สถานีดับเพลิง</b> ให้ดูแลครบ <b>ทุกหมู่บ้าน</b> แต่ละสถานีดูแลได้บางหมู่บ้านที่อยู่ใกล้ๆ</p>
+        <p>คำถามคือ จะสร้างสถานี <b>น้อยที่สุดกี่แห่ง</b> ถึงจะครอบคลุมหมดทุกหมู่บ้าน?</p>
+      </div>
+      <div class="card idea">
+        <h3>💡 ไอเดียเด็ด: “น้องโลภ” (Greedy)</h3>
+        <p>กฎง่ายมาก: <b>เลือกสถานีที่ครอบคลุมหมู่บ้าน “ใหม่” ได้เยอะที่สุดก่อนเสมอ</b> แล้วทำซ้ำจนครบ</p>
+        <p>เหมือนเวลาเก็บของเล่นเข้ากล่อง เราหยิบกองที่ใหญ่ที่สุดก่อน จะได้เสร็จไวๆ</p>
+      </div>
+
+      <div class="demo full">
+        <h3>🗺️ ลองวางสถานีดับเพลิงเอง</h3>
+        <p class="hint">กดเลือกสถานี (ปุ่มด้านล่าง) ให้หมู่บ้านทั้ง 10 หลังเป็นสีเขียวครบ โดยใช้สถานีให้น้อยที่สุด แล้วลองกด “ให้น้องโลภช่วย” เทียบกัน!</p>
+        <div class="villages" id="scVillages"></div>
+        <div class="stations" id="scStations"></div>
+        <div class="btn-row">
+          <button class="btn" id="scGreedy">🤖 ให้น้องโลภช่วย</button>
+          <button class="btn ghost" id="scReset">เริ่มใหม่</button>
+        </div>
+        <p class="stat" id="scStat" style="margin-top:12px"></p>
+      </div>
+
+      <div class="card fact">
+        <h3>✨ รู้ไหมว่า</h3>
+        <p>เทคนิค Set Cover เคยถูกใช้สร้าง <b>โปรแกรมแอนตี้ไวรัส</b> จริงๆ! นักวิจัยเลือก “ชิ้นโค้ดเล็กๆ” กลุ่มน้อยที่สุดที่ปรากฏในไวรัสทุกตัว เพื่อให้โปรแกรมจับไวรัสได้ครบ โดยไม่ต้องจำไวรัสทีละตัว 🦠</p>
+      </div>
+      <div class="card guarantee">
+        <h3>🏅 เก่งแค่ไหน?</h3>
+        <p>น้องโลภการันตีได้ว่าใช้สถานีไม่เกินประมาณ <span class="ratio">ln(n) เท่า</span> ของจำนวนที่น้อยที่สุด (n = จำนวนหมู่บ้าน)</p>
+        <p>ฟังดูเหมือนเยอะ แต่จริงๆ ในงานจริงมันมักได้คำตอบ <b>ใกล้เคียงดีที่สุดมาก</b> และที่สำคัญคือ <b>เร็วสุดๆ</b></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CH2 GREEDY / LOCAL SEARCH ===================== -->
+  <section id="ch2" class="chapter" style="--accent:#00B894">
+    <div class="ch-head">
+      <span class="ch-badge">บทที่ 2 · อัลกอริทึมโลภ &amp; การค้นหาเฉพาะที่</span>
+      <h2>⚖️ แบ่งงานให้ยุติธรรม (Scheduling)</h2>
+      <p class="ch-tag">โลภแบบฉลาด + ขยับทีละนิดให้ดีขึ้น</p>
+    </div>
+    <div class="ch-body">
+      <div class="card problem">
+        <h3>🤔 ปัญหาคืออะไร?</h3>
+        <p>มีการบ้าน (งาน) หลายชิ้น ใช้เวลาต่างกัน และมีเพื่อน 3 คนช่วยทำ เราอยากให้ <b>คนที่ทำเสร็จช้าที่สุด เสร็จเร็วที่สุด</b> (เรียกเวลานี้ว่า makespan)</p>
+        <p>คือแบ่งงานให้ <b>สมดุล</b> ไม่ให้ใครคนใดคนหนึ่งงานท่วมหัว</p>
+      </div>
+      <div class="card idea">
+        <h3>💡 ไอเดียเด็ด</h3>
+        <p><b>วิธีโลภ (List):</b> ใครว่างก่อน (งานน้อยสุด) รับงานชิ้นต่อไป</p>
+        <p><b>งานใหญ่ก่อน (LPT):</b> เรียงงานจากใหญ่ไปเล็กก่อน แล้วค่อยแจก — ฉลาดกว่าเยอะ!</p>
+        <p><b>การค้นหาเฉพาะที่ (Local Search):</b> เริ่มจากการแบ่งมั่วๆ แล้ว “สลับงาน” ทีละนิดถ้าทำให้ดีขึ้น เหมือนค่อยๆ ปีนขึ้นเขาทีละก้าว</p>
+      </div>
+
+      <div class="demo full">
+        <h3>🧑‍🤝‍🧑 ลองแบ่งงานให้เพื่อน 3 คน</h3>
+        <p class="hint">กดเลือกงาน (ก้อนสี) แล้วกดเครื่องของเพื่อนที่อยากให้ทำ หรือกดปุ่มให้ระบบช่วยแบ่ง เป้าหมาย: ทำให้แถบ “เสร็จช้าสุด” สั้นที่สุด!</p>
+        <div><b>งานที่ต้องแบ่ง</b> (ตัวเลข = ชั่วโมง):</div>
+        <div class="jobs" id="schJobs"></div>
+        <div class="machines" id="schMachines"></div>
+        <div style="margin-top:12px"><b>เสร็จช้าสุด (makespan):</b> <span class="stat" id="schMake">—</span></div>
+        <div class="bar-track"><div class="bar-fill" id="schBar"></div></div>
+        <div class="btn-row">
+          <button class="btn" id="schList">วิธีโลภ (ใครว่างรับงาน)</button>
+          <button class="btn" id="schLPT">งานใหญ่ก่อน (LPT)</button>
+          <button class="btn ghost" id="schReset">เริ่มใหม่</button>
+        </div>
+      </div>
+
+      <div class="card fact">
+        <h3>✨ รู้ไหมว่า</h3>
+        <p>เทคนิคนี้ใช้จริงในโรงงาน, ตารางเที่ยวบิน, และการแบ่งงานให้ “เซิร์ฟเวอร์” ในศูนย์ข้อมูลขนาดใหญ่ เพื่อให้เว็บโหลดเร็วๆ ⚙️</p>
+      </div>
+      <div class="card guarantee">
+        <h3>🏅 เก่งแค่ไหน?</h3>
+        <p>วิธีโลภแบบ List การันตี <span class="ratio">ไม่เกิน 2 เท่า</span> ของดีที่สุด ส่วน “งานใหญ่ก่อน (LPT)” เก่งขึ้นเป็น <span class="ratio">ราว 4/3 เท่า</span> เท่านั้นเอง!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CH3 ROUNDING DATA + DP ===================== -->
+  <section id="ch3" class="chapter" style="--accent:#FF9F1C">
+    <div class="ch-head">
+      <span class="ch-badge">บทที่ 3 · ปัดข้อมูล + โปรแกรมพลวัต</span>
+      <h2>🎒 เป้สะพายหลังมหัศจรรย์ (Knapsack)</h2>
+      <p class="ch-tag">ปัดตัวเลขให้ “กลมๆ” เพื่อคิดเร็วขึ้น แต่คำตอบยังเกือบเป๊ะ</p>
+    </div>
+    <div class="ch-body">
+      <div class="card problem">
+        <h3>🤔 ปัญหาคืออะไร?</h3>
+        <p>เราจะไปตั้งแคมป์ เป้ใบนี้รับน้ำหนักได้จำกัด เราอยากหยิบของที่ <b>มีคุณค่ารวมมากที่สุด</b> โดยน้ำหนักรวม <b>ไม่เกินที่เป้รับได้</b></p>
+      </div>
+      <div class="card idea">
+        <h3>💡 ไอเดียเด็ด</h3>
+        <p>การหาคำตอบเป๊ะๆ ช้ามากเมื่อ “คุณค่า” เป็นตัวเลขใหญ่ๆ</p>
+        <p>เคล็ดลับคือ <b>ปัดตัวเลขคุณค่าให้หยาบลง</b> (เช่น ปัดเป็นหลักสิบ) ทำให้คอมคิดเร็วขึ้นมหาศาล แต่คำตอบที่ได้ยัง <b>เกือบดีที่สุด</b> เหมือนปัดราคาสินค้าจาก 197 เป็น 200 เพื่อคิดเลขในใจง่ายๆ</p>
+      </div>
+
+      <div class="demo full">
+        <h3>🏕️ จัดเป้ไปแคมป์ปิ้ง</h3>
+        <p class="hint">เป้รับได้ <b>10 กิโลกรัม</b> กดเลือกของที่จะเอาไป ให้ได้คะแนนคุณค่ารวมมากที่สุดโดยไม่เกินน้ำหนัก แล้วกด “เฉลย” เทียบดูนะ!</p>
+        <div class="items" id="kpItems"></div>
+        <div>น้ำหนักรวม: <span class="stat" id="kpW">0</span> / 10 กก.</div>
+        <div class="gauge" id="kpGauge"><div class="fill" id="kpFill"></div></div>
+        <div><b>คุณค่ารวม:</b> <span class="stat" id="kpV">0</span> คะแนน</div>
+        <div class="btn-row">
+          <button class="btn" id="kpSolve">🔎 เฉลยคำตอบที่ดีที่สุด</button>
+          <button class="btn ghost" id="kpReset">เริ่มใหม่</button>
+        </div>
+        <p class="stat" id="kpMsg" style="margin-top:8px"></p>
+      </div>
+
+      <div class="card fact">
+        <h3>✨ รู้ไหมว่า</h3>
+        <p>วิธีปัดข้อมูลแบบนี้ดีจนได้ฉายาว่า <b>PTAS</b> — เราบอกได้เลยว่าอยากได้คำตอบใกล้ดีที่สุดแค่ไหน (เช่น ห่างแค่ 1%) แล้วเครื่องก็จัดให้ได้! 🎯</p>
+      </div>
+      <div class="card guarantee">
+        <h3>🏅 เก่งแค่ไหน?</h3>
+        <p>ปัญหาเป้สะพายหลังมีวิธีที่เข้าใกล้คำตอบดีที่สุดได้ <span class="ratio">ใกล้แค่ไหนก็ได้</span> (เช่น 99%, 99.9%) แลกกับการคิดนานขึ้นนิดหน่อย — คุ้มมาก!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CH4 DETERMINISTIC LP ROUNDING ===================== -->
+  <section id="ch4" class="chapter" style="--accent:#0984E3">
+    <div class="ch-head">
+      <span class="ch-badge">บทที่ 4 · การปัดเศษโปรแกรมเชิงเส้น</span>
+      <h2>🏪 ครึ่งๆ ก็ได้ แล้วค่อยปัด (LP Rounding)</h2>
+      <p class="ch-tag">ยอมให้ตัดสินใจ “ครึ่งๆ” ก่อน เพราะคิดง่าย แล้วค่อยปัดเป็นจริง</p>
+    </div>
+    <div class="ch-body">
+      <div class="card problem">
+        <h3>🤔 ปัญหาคืออะไร?</h3>
+        <p>เราจะเปิดร้านสาขาในเมือง ต้องเลือกว่า <b>เปิดที่ไหนบ้าง</b> ให้ลูกค้าทุกคนอยู่ใกล้ร้าน และต้นทุนรวมต่ำที่สุด การตัดสินใจ “เปิด/ไม่เปิด” (0 หรือ 1) ทำให้ปัญหายากมาก</p>
+      </div>
+      <div class="card idea">
+        <h3>💡 ไอเดียเด็ด</h3>
+        <p><b>โปรแกรมเชิงเส้น (LP)</b> คือการ “โกง” นิดหน่อย: เรายอมให้คำตอบเป็น <b>เศษส่วน</b> ได้ก่อน เช่น “เปิดร้าน 0.7 ร้าน” ฟังดูแปลก แต่คอมแก้แบบนี้ได้ <b>เร็วมาก</b></p>
+        <p>จากนั้นเรา <b>ปัดเศษ</b> กลับเป็นจริง เช่น 0.7 → เปิดจริง (1), 0.2 → ไม่เปิด (0)</p>
+      </div>
+
+      <figure class="illu full">
+        <svg viewBox="0 0 640 200" width="640" role="img" aria-label="แผนภาพการปัดเศษจากค่า 0.7 ให้เป็น 1">
+          <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0984E3"/></marker></defs>
+          <rect x="20" y="70" width="240" height="60" rx="14" fill="#eaf4ff" stroke="#0984E3" stroke-width="2"/>
+          <text x="140" y="95" text-anchor="middle" font-family="Itim" font-size="18" fill="#0b5ca8">คำตอบของ LP (เศษส่วน)</text>
+          <text x="140" y="120" text-anchor="middle" font-family="Itim" font-size="20" fill="#0b5ca8">เปิดร้าน = 0.7</text>
+          <line x1="270" y1="100" x2="370" y2="100" stroke="#0984E3" stroke-width="3" marker-end="url(#ar)"/>
+          <text x="320" y="88" text-anchor="middle" font-family="Mali" font-size="13" fill="#0984E3">ปัดเศษ</text>
+          <rect x="380" y="40" width="240" height="55" rx="14" fill="#d6f7e6" stroke="#00B894" stroke-width="2"/>
+          <text x="500" y="73" text-anchor="middle" font-family="Itim" font-size="18" fill="#0a7a52">0.7 ≥ ครึ่ง → เปิดจริง ✓</text>
+          <rect x="380" y="110" width="240" height="55" rx="14" fill="#ffe6e6" stroke="#FF6B6B" stroke-width="2"/>
+          <text x="500" y="143" text-anchor="middle" font-family="Itim" font-size="18" fill="#c0392b">0.2 &lt; ครึ่ง → ไม่เปิด ✗</text>
+        </svg>
+        <figcaption>คิดแบบ “ครึ่งๆ” ก่อน (เร็ว) แล้วค่อยปัดให้เป็นการตัดสินใจจริง</figcaption>
+      </figure>
+
+      <div class="card fact">
+        <h3>✨ รู้ไหมว่า</h3>
+        <p>การปัดเศษ LP ใช้แก้ปัญหา “เลือกทำเล” ของร้านสะดวกซื้อ คลังสินค้า และเสาสัญญาณมือถือจริงๆ 📡 เพื่อให้ครอบคลุมคนเยอะที่สุดด้วยต้นทุนน้อยที่สุด</p>
+      </div>
+      <div class="card guarantee">
+        <h3>🏅 เก่งแค่ไหน?</h3>
+        <p>วิธีปัดเศษ LP ให้การันตีดีๆ ได้หลายปัญหา เช่น “การเลือกทำเลร้าน” การันตีต้นทุน <span class="ratio">ไม่เกิน 4 เท่า</span> ของดีที่สุด (และมีวิธีที่เก่งกว่านี้อีก)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CH5 RANDOMIZED ROUNDING ===================== -->
+  <section id="ch5" class="chapter" style="--accent:#E84393">
+    <div class="ch-head">
+      <span class="ch-badge">บทที่ 5 · การสุ่มและการปัดเศษแบบสุ่ม</span>
+      <h2>🎲 ทอยลูกเต๋าช่วยตัดสินใจ (MAX CUT)</h2>
+      <p class="ch-tag">บางครั้ง “โยนเหรียญ” ก็ให้คำตอบที่ดีอย่างน่าทึ่ง</p>
+    </div>
+    <div class="ch-body">
+      <div class="card problem">
+        <h3>🤔 ปัญหาคืออะไร?</h3>
+        <p>เพื่อน 6 คน มีบางคู่ที่ชอบ <b>แกล้งกัน</b> (เส้นที่เชื่อม) เราจะแบ่งทุกคนเป็น <b>2 ห้อง</b> ยังไงให้คู่ที่ชอบแกล้งกัน <b>อยู่คนละห้องมากที่สุด</b> (ทะเลาะกันน้อยลง!)</p>
+      </div>
+      <div class="card idea">
+        <h3>💡 ไอเดียเด็ด</h3>
+        <p>ลองง่ายสุด: <b>ให้แต่ละคนโยนเหรียญ</b> ออกหัวไปห้อง A ออกก้อยไปห้อง B</p>
+        <p>น่าทึ่งมาก: โดยเฉลี่ยแล้ว วิธีมั่วๆ นี้จะแยกคู่แกล้งกันได้ <b>ถึงครึ่งหนึ่ง</b> ของจำนวนเส้นทั้งหมดเสมอ!</p>
+      </div>
+
+      <div class="demo full">
+        <h3>🪙 ลองแบ่งห้องด้วยการโยนเหรียญ</h3>
+        <p class="hint">กดที่ “เพื่อน” แต่ละคนเพื่อสลับห้อง (ฟ้า/ชมพู) หรือกด “โยนเหรียญสุ่ม” เส้นที่กลายเป็นสีเขียว = คู่แกล้งกันที่ถูกแยกห้องสำเร็จ ลองทำให้เขียวครบ 8 เส้นสิ!</p>
+        <div class="canvas-wrap"><canvas id="cutCanvas" width="460" height="320"></canvas></div>
+        <div style="text-align:center;margin-top:6px"><b>แยกได้:</b> <span class="stat" id="cutScore">0</span> / 9 เส้น</div>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn" id="cutRandom">🎲 โยนเหรียญสุ่ม</button>
+          <button class="btn ghost" id="cutBest">✨ คำตอบที่ดีที่สุด</button>
+        </div>
+      </div>
+
+      <div class="card fact">
+        <h3>✨ รู้ไหมว่า</h3>
+        <p>วิธี “สุ่ม” แบบนี้ใช้แก้ปัญหาใหญ่ๆ เช่น การจัดสายไฟในชิปคอมพิวเตอร์ และการแก้ปริศนาตรรกะ (MAX SAT) ได้ดีอย่างเหลือเชื่อ 🎯</p>
+      </div>
+      <div class="card guarantee">
+        <h3>🏅 เก่งแค่ไหน?</h3>
+        <p>แค่โยนเหรียญก็การันตีได้ <span class="ratio">อย่างน้อยครึ่งหนึ่ง (½)</span> ของคำตอบดีที่สุดแล้ว! และในบทถัดไปเราจะทำให้ดีขึ้นไปอีก 😎</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CH6 SDP ROUNDING ===================== -->
+  <section id="ch6" class="chapter" style="--accent:#A55EEA">
+    <div class="ch-head">
+      <span class="ch-badge">บทที่ 6 · การปัดเศษโปรแกรมกึ่งบวกแน่นอน (SDP)</span>
+      <h2>🧭 ลูกศรในอวกาศ &amp; มีดสุ่มหั่น</h2>
+      <p class="ch-tag">ใช้เรขาคณิตช่วยแบ่ง ให้ดีกว่าโยนเหรียญธรรมดา</p>
+    </div>
+    <div class="ch-body">
+      <div class="card problem">
+        <h3>🤔 ปัญหาคืออะไร?</h3>
+        <p>เป็นปัญหา “แบ่ง 2 ห้อง” เหมือนบทที่แล้ว แต่คราวนี้เราอยากได้คำตอบที่ <b>ดีกว่าครึ่ง</b> ให้มากที่สุด</p>
+      </div>
+      <div class="card idea">
+        <h3>💡 ไอเดียเด็ด (รางวัลโนเบลแห่งวงการ!)</h3>
+        <p>แทนคนแต่ละคนด้วย <b>ลูกศรชี้ทิศ</b> บนลูกบอล โดยพยายามให้คู่ที่แกล้งกัน <b>ชี้คนละทาง</b></p>
+        <p>จากนั้น <b>สุ่มหั่นลูกบอลด้วยมีดบางๆ</b> (เส้นตรงสุ่ม) ใครอยู่ฝั่งไหนก็ไปห้องนั้น เรขาคณิตช่วยให้แยกคู่แกล้งกันได้เยอะกว่าการโยนเหรียญเฉยๆ!</p>
+      </div>
+
+      <div class="demo full">
+        <h3>🔪 หมุน “มีดสุ่ม” หั่นแบ่งห้อง</h3>
+        <p class="hint">ลากแถบเลื่อนเพื่อหมุนเส้นมีด (เส้นประ) ดูว่ามุมไหนแยกคู่แกล้งกัน (เส้นเขียว) ได้มากที่สุด เห็นไหมว่าตำแหน่งของจุดช่วยให้หาคำตอบดีๆ ได้ง่ายขึ้น!</p>
+        <div class="canvas-wrap"><canvas id="sdpCanvas" width="460" height="320"></canvas></div>
+        <label>หมุนมีด: <span id="sdpAngle">0°</span></label>
+        <input id="sdpSlider" type="range" min="0" max="180" value="75" style="width:100%">
+        <div style="text-align:center;margin-top:6px"><b>แยกได้:</b> <span class="stat" id="sdpScore">0</span> / 9 เส้น</div>
+      </div>
+
+      <div class="card fact">
+        <h3>✨ รู้ไหมว่า</h3>
+        <p>วิธีนี้ชื่อ <b>Goemans–Williamson</b> (ผู้เขียนหนังสือเล่มนี้คนหนึ่งเลย!) ถือเป็นหนึ่งในผลงานที่สวยงามที่สุดในวงการ และยังไม่มีใครทำได้ดีกว่านี้มากเลยจนถึงทุกวันนี้ 🏆</p>
+      </div>
+      <div class="card guarantee">
+        <h3>🏅 เก่งแค่ไหน?</h3>
+        <p>การันตีได้ถึง <span class="ratio">ราว 0.878 เท่า</span> ของคำตอบดีที่สุด — ดีกว่าการโยนเหรียญ (0.5) แบบก้าวกระโดด!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CH7 PRIMAL-DUAL ===================== -->
+  <section id="ch7" class="chapter" style="--accent:#20BF6B">
+    <div class="ch-head">
+      <span class="ch-badge">บทที่ 7 · วิธีไพรมัล-ดูอัล</span>
+      <h2>🤝 ต่อราคาสองฝ่ายพร้อมกัน (Primal-Dual)</h2>
+      <p class="ch-tag">ค่อยๆ เพิ่มข้อเสนอ จนคุ้มค่อยตัดสินใจ — แถมได้ “ใบรับรอง” ว่าคำตอบดี</p>
+    </div>
+    <div class="ch-body">
+      <div class="card problem">
+        <h3>🤔 ปัญหาคืออะไร?</h3>
+        <p>เราจะ <b>ลากสายเชื่อมเมือง</b> ให้เมืองที่ต้องการคุยกันเชื่อมถึงกันครบ โดยใช้ความยาวสายรวม <b>น้อยที่สุด</b> (เช่น เดินสายอินเทอร์เน็ตให้คุ้มที่สุด)</p>
+      </div>
+      <div class="card idea">
+        <h3>💡 ไอเดียเด็ด</h3>
+        <p>คิดเหมือน <b>การประมูล/ต่อราคา</b>: แต่ละเมืองค่อยๆ “เพิ่มงบ” ของตัวเองขึ้นเรื่อยๆ (เหมือนวงกลมที่ขยายออก) พอ <b>งบของสองฝั่งมาเจอกันที่สายเส้นไหน</b> และมัน “คุ้ม” เราก็ <b>ซื้อสายเส้นนั้น</b></p>
+        <p>ความเจ๋งคือ “งบ” ที่เพิ่มขึ้นกลายเป็น <b>ใบรับรอง</b> พิสูจน์ได้ว่าคำตอบเราดีจริง โดยไม่ต้องเทียบกับคำตอบที่ดีที่สุด</p>
+      </div>
+
+      <figure class="illu full">
+        <svg viewBox="0 0 640 240" width="640" role="img" aria-label="แผนภาพวงกลมขยายจากสองเมืองจนมาเจอกันที่เส้นเชื่อม">
+          <line x1="180" y1="120" x2="460" y2="120" stroke="#cbb8e6" stroke-width="6"/>
+          <circle cx="180" cy="120" r="70" fill="none" stroke="#20BF6B" stroke-width="2.5" stroke-dasharray="6 6" opacity=".5"/>
+          <circle cx="180" cy="120" r="48" fill="none" stroke="#20BF6B" stroke-width="2.5" stroke-dasharray="6 6" opacity=".75"/>
+          <circle cx="460" cy="120" r="70" fill="none" stroke="#0984E3" stroke-width="2.5" stroke-dasharray="6 6" opacity=".5"/>
+          <circle cx="460" cy="120" r="48" fill="none" stroke="#0984E3" stroke-width="2.5" stroke-dasharray="6 6" opacity=".75"/>
+          <circle cx="180" cy="120" r="14" fill="#20BF6B"/>
+          <circle cx="460" cy="120" r="14" fill="#0984E3"/>
+          <text x="180" y="210" text-anchor="middle" font-family="Itim" font-size="18" fill="#16965a">เมือง A</text>
+          <text x="460" y="210" text-anchor="middle" font-family="Itim" font-size="18" fill="#0b5ca8">เมือง B</text>
+          <text x="320" y="60" text-anchor="middle" font-family="Mali" font-size="14" fill="#7a5fb0">งบสองฝั่งขยายมาเจอกัน → ซื้อสายนี้!</text>
+          <path d="M300 80 L320 108" stroke="#7a5fb0" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+        </svg>
+        <figcaption>วงกลม = “งบ” ที่แต่ละเมืองค่อยๆ เพิ่ม พอมาชนเส้นเชื่อมแล้วคุ้ม ก็ตัดสินใจซื้อ</figcaption>
+      </figure>
+
+      <div class="card fact">
+        <h3>✨ รู้ไหมว่า</h3>
+        <p>วิธีไพรมัล-ดูอัลใช้ออกแบบ <b>เครือข่ายจริง</b> เช่น วางสายไฟเบอร์ออปติก และวางแผนเส้นทางขนส่ง เพราะมันเร็วและไม่ต้องใช้คอมแรงมาก 🔌</p>
+      </div>
+      <div class="card guarantee">
+        <h3>🏅 เก่งแค่ไหน?</h3>
+        <p>สำหรับปัญหาลากสายเชื่อมเมือง (Steiner Forest) วิธีนี้การันตีความยาวรวม <span class="ratio">ไม่เกิน 2 เท่า</span> ของดีที่สุด แถมทำงานเร็วมาก</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CH8 CUTS & METRICS ===================== -->
+  <section id="ch8" class="chapter" style="--accent:#2D98DA">
+    <div class="ch-head">
+      <span class="ch-badge">บทที่ 8 · รอยตัดและระยะทาง</span>
+      <h2>✂️ ตัดแผนที่ให้แยกเขต (Cuts &amp; Metrics)</h2>
+      <p class="ch-tag">ตัดถนนให้น้อยที่สุด แต่แยกเมืองสำคัญออกจากกันให้ได้</p>
+    </div>
+    <div class="ch-body">
+      <div class="card problem">
+        <h3>🤔 ปัญหาคืออะไร?</h3>
+        <p>มีเมืองสำคัญหลายเมืองที่ <b>ต้องแยกออกจากกัน</b> (เช่น ป้องกันไฟป่าลามข้ามเขต) เราจะ <b>ตัดถนน</b> เส้นไหนบ้าง ให้เมืองเหล่านั้นไปหากันไม่ได้ โดย <b>ตัดถนนรวมน้อยที่สุด</b></p>
+      </div>
+      <div class="card idea">
+        <h3>💡 ไอเดียเด็ด</h3>
+        <p>เปลี่ยน “ความสัมพันธ์” ให้กลายเป็น <b>ระยะทางบนแผนที่</b> (เรียกว่า metric) จุดที่ควรอยู่ห้องเดียวกันให้ “ใกล้กัน” จุดที่ควรแยกให้ “ไกลกัน”</p>
+        <p>พอเป็นแผนที่ระยะทางแล้ว เราก็แค่ <b>ขีดเส้นแบ่งเขต</b> ตรงที่บางที่สุด — ง่ายขึ้นเยอะ!</p>
+      </div>
+
+      <figure class="illu full">
+        <svg viewBox="0 0 640 260" width="640" role="img" aria-label="แผนที่ที่ถูกเส้นโค้งตัดแบ่งออกเป็นสองเขต โดยแยกเมืองสีต่างกัน">
+          <rect x="20" y="20" width="600" height="220" rx="18" fill="#eaf6ff"/>
+          <path d="M320 20 C 360 90, 280 150, 330 240" fill="none" stroke="#FF6B6B" stroke-width="5" stroke-dasharray="10 7"/>
+          <text x="430" y="40" font-family="Mali" font-size="13" fill="#e0563f">✂️ เส้นตัด (ตัดถนนน้อยที่สุด)</text>
+          <g font-family="Itim" font-size="15">
+            <circle cx="120" cy="90" r="16" fill="#2D98DA"/><text x="120" y="120" text-anchor="middle" fill="#1c6aa6">บ้าน</text>
+            <circle cx="200" cy="170" r="16" fill="#2D98DA"/><text x="200" y="200" text-anchor="middle" fill="#1c6aa6">รร.</text>
+            <circle cx="480" cy="90" r="16" fill="#20BF6B"/><text x="480" y="120" text-anchor="middle" fill="#16965a">โรงงาน</text>
+            <circle cx="540" cy="180" r="16" fill="#20BF6B"/><text x="540" y="210" text-anchor="middle" fill="#16965a">ตลาด</text>
+          </g>
+          <line x1="120" y1="90" x2="200" y2="170" stroke="#9bbad6" stroke-width="3"/>
+          <line x1="480" y1="90" x2="540" y2="180" stroke="#8fd6b4" stroke-width="3"/>
+        </svg>
+        <figcaption>เมืองสีฟ้าอยู่เขตซ้าย เมืองสีเขียวอยู่เขตขวา เส้นตัดสีแดงเลือกตัดถนนน้อยเส้นที่สุด</figcaption>
+      </figure>
+
+      <div class="card fact">
+        <h3>✨ รู้ไหมว่า</h3>
+        <p>เทคนิค “รอยตัด” ใช้ใน <b>การแบ่งกลุ่มข้อมูล</b> (เช่น แยกรูปภาพออกจากพื้นหลัง), การออกแบบวงจร, และการวิเคราะห์เครือข่ายสังคม 🌐</p>
+      </div>
+      <div class="card guarantee">
+        <h3>🏅 เก่งแค่ไหน?</h3>
+        <p>หลายปัญหารอยตัดมีอัลกอริทึมที่การันตีได้ เช่น Multiway Cut การันตี <span class="ratio">ไม่เกินราว 1.5 เท่า</span> และปัญหายากกว่านั้นก็ยังการันตีระดับ <span class="ratio">O(log n)</span> ได้</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GLOSSARY ===================== -->
+  <section id="glossary">
+    <h2 class="section-title">📚 คำศัพท์น่ารู้</h2>
+    <p class="section-sub">ศัพท์เท่ๆ ที่เจอในเว็บนี้ อธิบายสั้นๆ แบบเข้าใจง่าย</p>
+    <div class="gloss">
+      <div class="term"><b>NP-hard</b> <span class="en">(เอ็นพี-ฮาร์ด)</span><p>ปัญหายากระดับที่ยังไม่มีใครรู้วิธีหาคำตอบดีที่สุดได้เร็วเลย พอข้อมูลใหญ่ขึ้นก็แทบเป็นไปไม่ได้</p></div>
+      <div class="term"><b>อัลกอริทึมแบบประมาณ</b> <span class="en">approximation algorithm</span><p>วิธีที่ให้คำตอบ “ดีพอ” ได้เร็ว พร้อมการันตีว่าใกล้คำตอบดีที่สุดแค่ไหน</p></div>
+      <div class="term"><b>อัตราการประมาณ (α)</b> <span class="en">approximation ratio</span><p>ตัวเลขบอกว่าคำตอบเราแย่กว่าดีที่สุดได้ไม่เกินกี่เท่า ยิ่งใกล้ 1 ยิ่งเก่ง</p></div>
+      <div class="term"><b>อัลกอริทึมโลภ</b> <span class="en">greedy</span><p>เลือกสิ่งที่ดูดีที่สุด “ตอนนี้” ไปเรื่อยๆ โดยไม่คิดเผื่ออนาคต — ง่ายและเร็ว</p></div>
+      <div class="term"><b>การค้นหาเฉพาะที่</b> <span class="en">local search</span><p>เริ่มจากคำตอบหนึ่ง แล้วขยับทีละนิดถ้ามันทำให้ดีขึ้น เหมือนค่อยๆ ปีนเขา</p></div>
+      <div class="term"><b>โปรแกรมเชิงเส้น</b> <span class="en">Linear Programming (LP)</span><p>วิธีหาคำตอบที่ดีที่สุดเมื่อยอมให้ตัวเลขเป็นเศษส่วนได้ คอมแก้ได้เร็วมาก</p></div>
+      <div class="term"><b>การปัดเศษ</b> <span class="en">rounding</span><p>แปลงคำตอบเศษส่วน (เช่น 0.7) ให้กลายเป็นการตัดสินใจจริง (0 หรือ 1)</p></div>
+      <div class="term"><b>การสุ่ม</b> <span class="en">randomization</span><p>ใช้การ “โยนเหรียญ/ทอยลูกเต๋า” ช่วยตัดสินใจ ซึ่งบ่อยครั้งให้คำตอบดีโดยเฉลี่ย</p></div>
+      <div class="term"><b>PTAS</b> <span class="en">approximation scheme</span><p>วิธีที่เราสั่งได้เลยว่าอยากได้คำตอบใกล้ดีที่สุดแค่ไหน แล้วเครื่องจัดให้ได้</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <section id="quiz">
+    <h2 class="section-title">🧠 มาทบทวนกัน!</h2>
+    <p class="section-sub">ลองตอบดูนะ กดเลือกคำตอบแล้วระบบจะบอกเฉลยทันที</p>
+    <div id="quizBox"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="credit">
+    <p>🤖 เว็บนี้ทำขึ้นเพื่อการเรียนรู้ ย่อยจากหนังสือ<br>
+    <b>The Design of Approximation Algorithms</b><br>
+    โดย David P. Williamson และ David B. Shmoys (Cambridge University Press, 2011)</p>
+    <p>หนังสือฉบับเต็มเปิดให้อ่านฟรีที่ <a href="https://www.designofapproxalgs.com/" target="_blank" rel="noopener">designofapproxalgs.com</a></p>
+    <p style="opacity:.7;font-size:13px">เนื้อหาบนเว็บนี้เป็นการอธิบายแนวคิดแบบง่ายสำหรับเด็ก ตัวเลขการันตีบางส่วนถูกปรับให้เข้าใจง่าย โปรดดูรายละเอียดทางคณิตศาสตร์ฉบับสมบูรณ์จากหนังสือ</p>
+  </div>
+</footer>
+
+<button id="top" aria-label="กลับขึ้นบนสุด">↑</button>
+
+<script>
+"use strict";
+function $(id){return document.getElementById(id);}
+
+/* ---------- progress bar + back to top + nav highlight ---------- */
+(function(){
+  var bar=$("progress"), topBtn=$("top");
+  function onScroll(){
+    var h=document.documentElement;
+    var sc=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;
+    bar.style.width=(sc/max*100)+"%";
+    if(sc>500){topBtn.classList.add("show");}else{topBtn.classList.remove("show");}
+  }
+  window.addEventListener("scroll",onScroll,{passive:true});
+  topBtn.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
+  onScroll();
+})();
+
+/* ---------- INTRO: route explosion ---------- */
+(function(){
+  try{
+    var slider=$("tspSlider"), nEl=$("tspN"), out=$("tspRoutes"), msg=$("tspMsg"), timeEl=$("tspTime");
+    function factBig(n){var r=1n;for(var i=2n;i<=BigInt(n);i++){r*=i;}return r;}
+    function group(bg){
+      var s=bg.toString(), out="", c=0;
+      for(var i=s.length-1;i>=0;i--){out=s[i]+out;c++;if(c%3===0&&i>0)out=","+out;}
+      return out;
+    }
+    function compare(num){
+      if(num>=1e18) return "🏖️ มากมายราวกับเม็ดทรายบนชายหาด!";
+      if(num>=1e12) return "⭐ มากกว่าจำนวนดาวในกาแล็กซีของเรา!";
+      if(num>=1e9)  return "😮 มากกว่าหนึ่งพันล้าน!";
+      if(num>=1e6)  return "😅 เกินหนึ่งล้านแล้วนะ!";
+      if(num>=1e3)  return "🙂 เริ่มเยอะแล้ว!";
+      return "🙂 ยังพอลองทุกทางไหว";
+    }
+    function yearStr(num){
+      // สมมติคอมพิวเตอร์ลองได้ 1 พันล้านเส้นทาง/วินาที
+      var sec=num/1e9;
+      if(sec<1)     return "คอมเร็วๆ (1 พันล้านเส้น/วินาที) ใช้เวลาไม่ถึงวินาทีเดียว";
+      if(sec<60)    return "คอมเร็วๆ ใช้เวลาราว "+sec.toFixed(1)+" วินาที";
+      if(sec<3600)  return "คอมเร็วๆ ใช้เวลาราว "+(sec/60).toFixed(1)+" นาที";
+      if(sec<86400) return "คอมเร็วๆ ใช้เวลาราว "+(sec/3600).toFixed(1)+" ชั่วโมง";
+      var yrs=sec/3.1536e7;
+      if(yrs<1)   return "คอมเร็วๆ ใช้เวลาราว "+(sec/86400).toFixed(1)+" วัน";
+      if(yrs<1e6) return "คอมเร็วๆ ใช้เวลาราว "+Math.round(yrs).toLocaleString("th-TH")+" ปี 😱";
+      return "คอมเร็วๆ ใช้เวลาราว "+(yrs/1e6).toFixed(1)+" ล้านปี 🤯";
+    }
+    function render(){
+      var n=+slider.value; nEl.textContent=n;
+      var bg=factBig(n-1); // (n-1)!
+      // divide by 2 (BigInt)
+      var routesBig=bg/2n;
+      var num=Number(routesBig);
+      out.textContent = (num<1e12)? group(routesBig) : num.toExponential(2).replace("e+"," × 10^");
+      msg.textContent=compare(num);
+      timeEl.textContent=yearStr(num);
+    }
+    slider.addEventListener("input",render);
+    render();
+  }catch(e){console.error("intro demo",e);}
+})();
+
+/* ---------- CH1: Set Cover ---------- */
+(function(){
+  try{
+    var N=10;
+    var sets={
+      "A":[1,2,3,4], "B":[3,4,5,6,7], "C":[7,8,9,10],
+      "D":[1,2], "E":[5,6], "F":[9,10]
+    };
+    var order=["A","B","C","D","E","F"];
+    var chosen={};
+    var vWrap=$("scVillages"), sWrap=$("scStations"), stat=$("scStat");
+    // build villages
+    var vEls={};
+    for(var i=1;i<=N;i++){
+      var d=document.createElement("div");
+      d.className="vil"; d.textContent="🏠";
+      var s=document.createElement("small"); s.textContent=i; d.appendChild(s);
+      vWrap.appendChild(d); vEls[i]=d;
+    }
+    // build station buttons
+    order.forEach(function(k){
+      var b=document.createElement("div");
+      b.className="stn";
+      b.innerHTML="🚒 สถานี "+k+"<br><span style='font-size:11px;opacity:.8'>ดูแล "+sets[k].join(", ")+"</span>";
+      b.addEventListener("click",function(){
+        chosen[k]=!chosen[k];
+        b.classList.toggle("on",!!chosen[k]);
+        update();
+      });
+      sWrap.appendChild(b); b._key=k;
+    });
+    function update(){
+      var cov={};
+      var used=0;
+      order.forEach(function(k){ if(chosen[k]){used++; sets[k].forEach(function(e){cov[e]=true;});} });
+      var c=0;
+      for(var i=1;i<=N;i++){ if(cov[i]){c++; vEls[i].classList.add("cov");} else {vEls[i].classList.remove("cov");} }
+      if(c===N){
+        stat.innerHTML="🎉 ครอบคลุมครบ 10 หลัง! ใช้สถานี <b>"+used+"</b> แห่ง"+(used<=3?" — เก่งมาก! (คำตอบที่ดีที่สุดคือ 3 แห่ง)":" — ลองลดให้เหลือ 3 แห่งดูสิ!");
+      }else{
+        stat.innerHTML="ครอบคลุม "+c+"/10 หลัง · ใช้สถานี "+used+" แห่ง";
+      }
+    }
+    $("scGreedy").addEventListener("click",function(){
+      // reset then greedy
+      chosen={}; var cov={};
+      while(true){
+        var best=null,bestNew=0;
+        order.forEach(function(k){
+          if(chosen[k])return;
+          var nw=0; sets[k].forEach(function(e){if(!cov[e])nw++;});
+          if(nw>bestNew){bestNew=nw;best=k;}
+        });
+        if(!best||bestNew===0)break;
+        chosen[best]=true; sets[best].forEach(function(e){cov[e]=true;});
+      }
+      // reflect on buttons
+      Array.prototype.forEach.call(sWrap.children,function(b){b.classList.toggle("on",!!chosen[b._key]);});
+      update();
+      var used=Object.keys(chosen).length;
+      stat.innerHTML="🤖 น้องโลภเลือก "+used+" สถานี: "+Object.keys(chosen).join(", ")+" — ครอบคลุมครบทุกหลัง!";
+    });
+    $("scReset").addEventListener("click",function(){
+      chosen={}; Array.prototype.forEach.call(sWrap.children,function(b){b.classList.remove("on");}); update();
+    });
+    update();
+  }catch(e){console.error("setcover",e);}
+})();
+
+/* ---------- CH2: Scheduling ---------- */
+(function(){
+  try{
+    var durations=[3,1,4,1,5,2,2,3];
+    var colors=["#00B894","#0984E3","#E84393","#FF9F1C","#A55EEA","#FF6B6B","#2D98DA","#e67e22"];
+    var jobs=durations.map(function(d,i){return {id:i,d:d,m:null};});
+    var sel=null;
+    var jWrap=$("schJobs"), mWrap=$("schMachines");
+    var jEls=[];
+    function buildJobs(){
+      jWrap.innerHTML="";
+      jobs.forEach(function(j){
+        var e=document.createElement("div");
+        e.className="job"+(j.m!==null?" used":"")+(sel===j.id?" sel":"");
+        e.style.background=colors[j.id%colors.length];
+        e.style.width=(28+j.d*8)+"px";
+        e.textContent=j.d;
+        e.addEventListener("click",function(){
+          if(j.m!==null){ // unassign back
+            j.m=null; sel=null; render(); return;
+          }
+          sel=(sel===j.id)?null:j.id; render();
+        });
+        jWrap.appendChild(e);
+      });
+    }
+    function render(){
+      buildJobs();
+      mWrap.innerHTML="";
+      var loads=[0,0,0];
+      for(var m=0;m<3;m++){
+        (function(m){
+          var box=document.createElement("div");
+          box.className="mac";
+          box.innerHTML="<h4>👦 เพื่อนคนที่ "+(m+1)+"</h4>";
+          jobs.forEach(function(j){
+            if(j.m===m){
+              loads[m]+=j.d;
+              var b=document.createElement("div");
+              b.className="blk"; b.style.background=colors[j.id%colors.length];
+              b.style.height=(14+j.d*7)+"px"; b.style.lineHeight=(14+j.d*7)+"px";
+              b.textContent=j.d+" ชม.";
+              box.appendChild(b);
+            }
+          });
+          var tot=document.createElement("div");
+          tot.style.cssText="font-family:Itim;margin-top:4px;color:#555";
+          tot.textContent="รวม "+loads[m]+" ชม.";
+          box.appendChild(tot);
+          box.addEventListener("click",function(){
+            if(sel!==null){ jobs[sel].m=m; sel=null; render(); }
+          });
+          mWrap.appendChild(box);
+        })(m);
+      }
+      var make=Math.max(loads[0],loads[1],loads[2]);
+      var assigned=jobs.every(function(j){return j.m!==null;});
+      $("schMake").textContent= assigned? (make+" ชม.") : (make+" ชม. (ยังแบ่งไม่ครบ)");
+      var totalAll=durations.reduce(function(a,b){return a+b;},0);
+      var fill=$("schBar");
+      fill.style.width=Math.min(100,(make/totalAll*100*1.6))+"%";
+      fill.textContent=make+" ชม.";
+      fill.style.background= (assigned&&make<=8)? "#00B894" : "var(--accent)";
+    }
+    function clearAll(){jobs.forEach(function(j){j.m=null;});sel=null;}
+    function leastLoaded(loads){var mi=0;for(var i=1;i<3;i++){if(loads[i]<loads[mi])mi=i;}return mi;}
+    $("schList").addEventListener("click",function(){
+      clearAll(); var loads=[0,0,0];
+      jobs.forEach(function(j){var m=leastLoaded(loads);j.m=m;loads[m]+=j.d;});
+      render();
+    });
+    $("schLPT").addEventListener("click",function(){
+      clearAll(); var loads=[0,0,0];
+      var sorted=jobs.slice().sort(function(a,b){return b.d-a.d;});
+      sorted.forEach(function(j){var m=leastLoaded(loads);j.m=m;loads[m]+=j.d;});
+      render();
+    });
+    $("schReset").addEventListener("click",function(){clearAll();render();});
+    render();
+  }catch(e){console.error("sched",e);}
+})();
+
+/* ---------- CH3: Knapsack ---------- */
+(function(){
+  try{
+    var CAP=10;
+    var items=[
+      {emo:"🍫",nm:"ช็อกโกแลต",w:2,v:3},
+      {emo:"📷",nm:"กล้อง",w:4,v:6},
+      {emo:"🧴",nm:"ครีมกันแดด",w:3,v:4},
+      {emo:"📖",nm:"หนังสือ",w:5,v:4},
+      {emo:"💧",nm:"น้ำดื่ม",w:3,v:5},
+      {emo:"🔦",nm:"ไฟฉาย",w:1,v:2}
+    ];
+    var on=items.map(function(){return false;});
+    var wrap=$("kpItems");
+    items.forEach(function(it,i){
+      var e=document.createElement("div");
+      e.className="item";
+      e.innerHTML="<div class='emo'>"+it.emo+"</div><div class='nm'>"+it.nm+"</div><div class='sp'>"+it.w+" กก. · "+it.v+" คะแนน</div>";
+      e.addEventListener("click",function(){on[i]=!on[i];e.classList.toggle("on",on[i]);update();});
+      wrap.appendChild(e); it._el=e;
+    });
+    function update(){
+      var w=0,v=0;
+      items.forEach(function(it,i){if(on[i]){w+=it.w;v+=it.v;}});
+      $("kpW").textContent=w; $("kpV").textContent=v;
+      var g=$("kpGauge"), fill=$("kpFill");
+      fill.style.width=Math.min(100,w/CAP*100)+"%";
+      var msg=$("kpMsg");
+      if(w>CAP){g.classList.add("over");fill.textContent="เกิน!";msg.textContent="⚠️ น้ำหนักเกิน "+CAP+" กก. แล้วนะ เป้แบกไม่ไหว!";msg.style.color="#c0392b";}
+      else{g.classList.remove("over");fill.textContent=w+"กก.";
+        if(v>=16){msg.textContent="🎉 สุดยอด! ได้ 16 คะแนน = คำตอบที่ดีที่สุดพอดี!";msg.style.color="#0a7a52";}
+        else if(v>0){msg.textContent="ลองหาทางให้ได้คะแนนเยอะกว่านี้ดูสิ!";msg.style.color="var(--soft)";}
+        else{msg.textContent="";}
+      }
+    }
+    $("kpSolve").addEventListener("click",function(){
+      // คำตอบที่ดีที่สุด = ช็อกโกแลต+กล้อง+น้ำ+ไฟฉาย (idx 0,1,4,5) -> 16 คะแนน, 10 กก.
+      on=[true,true,false,false,true,true];
+      items.forEach(function(it,i){it._el.classList.toggle("on",on[i]);});
+      update();
+      $("kpMsg").textContent="🔎 คำตอบดีที่สุด: ไฟฉาย + น้ำดื่ม + ช็อกโกแลต + กล้อง = 16 คะแนน (พอดี 10 กก.)";
+      $("kpMsg").style.color="#0a7a52";
+    });
+    $("kpReset").addEventListener("click",function(){
+      on=items.map(function(){return false;});
+      items.forEach(function(it){it._el.classList.remove("on");});
+      update();
+    });
+    update();
+  }catch(e){console.error("knapsack",e);}
+})();
+
+/* ---------- shared small graph for CH5 & CH6 ---------- */
+var GRAPH=(function(){
+  // 6 nodes on a circle + edges (with one odd structure so max<all)
+  var cx=230,cy=160,R=120;
+  var nodes=[];
+  for(var i=0;i<6;i++){
+    var a=-Math.PI/2 + i*Math.PI/3;
+    nodes.push({x:cx+R*Math.cos(a), y:cy+R*Math.sin(a)});
+  }
+  var edges=[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[0,3],[1,4],[0,2]];
+  return {nodes:nodes,edges:edges,cx:cx,cy:cy,R:R};
+})();
+
+/* ช6 ใช้ "การวางตำแหน่งแบบฉลาด": จุดคู่ {0,2,4} อยู่ซ้าย จุดคี่ {1,3,5} อยู่ขวา
+   เพื่อให้เส้นมีดเส้นเดียวแยกได้ถึง 8/9 เส้น (= คำตอบที่ดีที่สุดจริง) */
+var GRAPH6=(function(){
+  var nodes=[];
+  nodes[0]={x:150,y:80}; nodes[2]={x:150,y:160}; nodes[4]={x:150,y:240};
+  nodes[1]={x:310,y:80}; nodes[3]={x:310,y:160}; nodes[5]={x:310,y:240};
+  return {nodes:nodes, edges:GRAPH.edges, cx:230, cy:160};
+})();
+
+/* ---------- CH5: MAX CUT coin flip ---------- */
+(function(){
+  try{
+    var cv=$("cutCanvas"); if(!cv)return;
+    var ctx=cv.getContext("2d");
+    var side=[0,0,0,0,0,0]; // 0 or 1
+    function cutCount(){var c=0;GRAPH.edges.forEach(function(e){if(side[e[0]]!==side[e[1]])c++;});return c;}
+    function draw(){
+      ctx.clearRect(0,0,cv.width,cv.height);
+      // edges
+      GRAPH.edges.forEach(function(e){
+        var a=GRAPH.nodes[e[0]], b=GRAPH.nodes[e[1]];
+        var cut=side[e[0]]!==side[e[1]];
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+        ctx.lineWidth=cut?5:3;
+        ctx.strokeStyle=cut?"#00B894":"#d8cfe8";
+        ctx.stroke();
+      });
+      // nodes
+      GRAPH.nodes.forEach(function(n,i){
+        ctx.beginPath();ctx.arc(n.x,n.y,22,0,7);
+        ctx.fillStyle=side[i]===0?"#45AAF2":"#E84393";
+        ctx.fill();ctx.lineWidth=3;ctx.strokeStyle="#fff";ctx.stroke();
+        ctx.fillStyle="#fff";ctx.font="20px Itim";ctx.textAlign="center";ctx.textBaseline="middle";
+        ctx.fillText("🙂",n.x,n.y+1);
+      });
+      $("cutScore").textContent=cutCount();
+    }
+    cv.addEventListener("click",function(ev){
+      var r=cv.getBoundingClientRect();
+      var x=(ev.clientX-r.left)*(cv.width/r.width), y=(ev.clientY-r.top)*(cv.height/r.height);
+      GRAPH.nodes.forEach(function(n,i){
+        if((x-n.x)*(x-n.x)+(y-n.y)*(y-n.y)<26*26){side[i]^=1;}
+      });
+      draw();
+    });
+    $("cutRandom").addEventListener("click",function(){
+      side=side.map(function(){return Math.random()<0.5?0:1;});draw();
+    });
+    $("cutBest").addEventListener("click",function(){
+      side=[0,1,0,1,0,1];draw(); // even/odd split -> cuts 8 of 9
+    });
+    draw();
+  }catch(e){console.error("maxcut",e);}
+})();
+
+/* ---------- CH6: SDP rotating cut ---------- */
+(function(){
+  try{
+    var cv=$("sdpCanvas"); if(!cv)return;
+    var ctx=cv.getContext("2d");
+    var slider=$("sdpSlider"), angEl=$("sdpAngle");
+    function sideOf(n,theta){
+      // เวกเตอร์ตั้งฉากกับเส้นมีด
+      var nx=Math.cos(theta), ny=Math.sin(theta);
+      var dx=n.x-GRAPH6.cx, dy=n.y-GRAPH6.cy;
+      return (dx*nx+dy*ny)>=0?1:0;
+    }
+    function draw(){
+      var deg=+slider.value; angEl.textContent=deg+"°";
+      var theta=deg*Math.PI/180;
+      ctx.clearRect(0,0,cv.width,cv.height);
+      // เส้นมีด (ตั้งฉากกับ normal) แบบเส้นประ
+      var lx=Math.cos(theta+Math.PI/2), ly=Math.sin(theta+Math.PI/2);
+      ctx.save();ctx.setLineDash([10,8]);ctx.strokeStyle="#A55EEA";ctx.lineWidth=4;
+      ctx.beginPath();
+      ctx.moveTo(GRAPH6.cx-lx*150,GRAPH6.cy-ly*150);
+      ctx.lineTo(GRAPH6.cx+lx*150,GRAPH6.cy+ly*150);
+      ctx.stroke();ctx.restore();
+      var c=0;
+      GRAPH6.edges.forEach(function(e){
+        var a=GRAPH6.nodes[e[0]], b=GRAPH6.nodes[e[1]];
+        var cut=sideOf(a,theta)!==sideOf(b,theta);
+        if(cut)c++;
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+        ctx.lineWidth=cut?5:3;ctx.strokeStyle=cut?"#00B894":"#d8cfe8";ctx.stroke();
+      });
+      GRAPH6.nodes.forEach(function(n,i){
+        var s=sideOf(n,theta);
+        ctx.beginPath();ctx.arc(n.x,n.y,22,0,7);
+        ctx.fillStyle=s===0?"#45AAF2":"#E84393";ctx.fill();
+        ctx.lineWidth=3;ctx.strokeStyle="#fff";ctx.stroke();
+        ctx.fillStyle="#fff";ctx.font="20px Itim";ctx.textAlign="center";ctx.textBaseline="middle";
+        ctx.fillText("🙂",n.x,n.y+1);
+      });
+      $("sdpScore").textContent=c;
+    }
+    slider.addEventListener("input",draw);
+    draw();
+  }catch(e){console.error("sdp",e);}
+})();
+
+/* ---------- QUIZ ---------- */
+(function(){
+  try{
+    var data=[
+      {q:"“อัลกอริทึมแบบประมาณ” มีไว้ทำไม?",
+       opts:["หาคำตอบที่ดีที่สุดเสมอ","ให้คำตอบที่ดีพอ ได้เร็ว พร้อมการันตีความใกล้เคียง","ทำให้คอมพิวเตอร์ช้าลง"],
+       right:1, ans:"เพราะปัญหายากบางอย่างหาคำตอบดีที่สุดไม่ทัน เราจึงหาคำตอบที่ดีพอแบบเร็วๆ แทน"},
+      {q:"“น้องโลภ” (greedy) ทำงานยังไง?",
+       opts:["สุ่มเลือกมั่วๆ","เลือกสิ่งที่ดูดีที่สุดตอนนี้ก่อนเสมอ","ลองทุกความเป็นไปได้"],
+       right:1, ans:"greedy เลือกตัวเลือกที่ดีที่สุด ณ ตอนนั้น เช่น สถานีที่ครอบคลุมของใหม่ได้เยอะสุด"},
+      {q:"การ “โยนเหรียญสุ่ม” ในปัญหาแบ่ง 2 ห้อง การันตีได้อย่างน้อยเท่าไหร่?",
+       opts:["อย่างน้อยครึ่งหนึ่งของคำตอบดีที่สุด","ดีที่สุดเสมอ","ไม่การันตีอะไรเลย"],
+       right:0, ans:"การสุ่มแบ่งห้องการันตีได้อย่างน้อยครึ่ง (½) ของคำตอบดีที่สุดโดยเฉลี่ย"},
+      {q:"ทำไมต้อง “ปัดตัวเลขให้กลม” ในปัญหาเป้สะพายหลัง?",
+       opts:["เพื่อให้คอมคิดเร็วขึ้นมาก แต่คำตอบยังเกือบเป๊ะ","เพื่อให้คำตอบแย่ลง","เพราะตัวเลขกลมสวยกว่า"],
+       right:0, ans:"การปัดข้อมูลให้หยาบลงช่วยให้คำนวณเร็วขึ้นมหาศาล โดยคำตอบยังใกล้เคียงดีที่สุด"}
+    ];
+    var box=$("quizBox");
+    data.forEach(function(item,qi){
+      var d=document.createElement("div"); d.className="quiz";
+      var q=document.createElement("p"); q.className="q"; q.textContent=(qi+1)+". "+item.q; d.appendChild(q);
+      var opts=document.createElement("div"); opts.className="opts";
+      var answered=false;
+      item.opts.forEach(function(o,oi){
+        var b=document.createElement("button"); b.className="opt"; b.textContent=o;
+        b.addEventListener("click",function(){
+          if(answered)return; answered=true;
+          if(oi===item.right){b.classList.add("right");}
+          else{b.classList.add("wrong"); opts.children[item.right].classList.add("right");}
+          d.querySelector(".ans").style.display="block";
+        });
+        opts.appendChild(b);
+      });
+      d.appendChild(opts);
+      var ans=document.createElement("div"); ans.className="ans"; ans.textContent="💡 "+item.ans; d.appendChild(ans);
+      box.appendChild(d);
+    });
+  }catch(e){console.error("quiz",e);}
+})();
+</script>
+</body>
+</html>
